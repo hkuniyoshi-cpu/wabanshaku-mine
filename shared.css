@@ -726,13 +726,14 @@ a { color: inherit; text-decoration: none; }
 .aside-nav a:hover::after, .aside-nav a.active::after, .aside-nav a:focus-visible::after { width: 100%; }
 .split-aside:focus-within .aside-vertical { opacity: .85; transition: opacity .3s ease; }
 
-/* Split main (right side) */
-.split-main { position: relative; z-index: 0; background: var(--bg); }
+/* Split main (right side) — min-width:0 lets flex/grid children shrink & their overflow-x scrollers actually contain */
+.split-main { position: relative; z-index: 0; background: var(--bg); min-width: 0; }
 .split-main .section {
   padding: 130px 8vw;
   display: flex; flex-direction: column; justify-content: center;
   position: relative;
   border-bottom: 1px solid var(--line);
+  min-width: 0;
 }
 .split-main .section:last-of-type { border-bottom: none; }
 .split-main #chef            { padding: 160px 8vw 130px; }
@@ -1236,19 +1237,35 @@ a { color: inherit; text-decoration: none; }
   .aside-brand .brand-jp { font-size: 30px; letter-spacing: .18em; }
   .cta-band { padding: 80px 20px; }
 
-  .menu-grid, .scenes, .cards, .reviews-grid, .wall {
+  /* Unified mobile carousel — Menu / Scenes / Reviews / Blog wall / Delivery cards.
+     grid-template-columns:unset + grid-auto-rows:unset kills any tablet grid overrides. */
+  .menu-grid, .scenes, .cards, .reviews-grid, .wall, .sns-row {
     display: flex; flex-wrap: nowrap;
     overflow-x: auto; scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 14px; padding: 0 4px 18px;
     scrollbar-width: none;
+    grid-template-columns: unset;
+    grid-auto-rows: unset;
+    scroll-padding-left: 20px;
+    /* keep flex container from expanding its section */
+    min-width: 0; max-width: 100%;
   }
-  .menu-grid::-webkit-scrollbar, .scenes::-webkit-scrollbar, .cards::-webkit-scrollbar, .reviews-grid::-webkit-scrollbar, .wall::-webkit-scrollbar { display: none; }
-  .menu-card, .menu-skel, .scene-card, .delivery-card, .review, .review-skel, .review-cta, .blog-card {
+  .menu-grid::-webkit-scrollbar, .scenes::-webkit-scrollbar, .cards::-webkit-scrollbar,
+  .reviews-grid::-webkit-scrollbar, .wall::-webkit-scrollbar, .sns-row::-webkit-scrollbar { display: none; }
+
+  .menu-card, .menu-skel, .scene-card, .delivery-card,
+  .review, .review-skel, .review-cta,
+  .blog-card, a.blog-card, .sns-card {
     flex: 0 0 78vw; max-width: 300px; scroll-snap-align: start; min-width: 0;
   }
   .review, .review-skel, .review-cta { flex-basis: 82vw; min-height: 240px; height: auto; }
   .menu-skel { min-height: 240px; }
+
+  /* Sec-lead: cap width so it wraps inside padded section */
+  .sec-lead { max-width: 100%; }
+
+  /* Gallery marquee unchanged (already auto-scrolling) */
   .gallery-item, .gallery-skel { width: 78vw; max-width: 280px; height: 100vw; max-height: 380px; }
 }
 

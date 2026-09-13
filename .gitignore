@@ -1,0 +1,34 @@
+# GAS / API キー入り
+gas/
+scripts/
+*.gs.local
+Code.gs
+setup.gs
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ローカル環境
+.env
+.env.local
+.clasp.json
+.clasprc.json
+
+# ハンドオフ資料（社内用）
+handoff/
+DEPLOY-KEYS.md
+
+# エディタ / ビルドキャッシュ
+.claude/
+.wrangler/
+
+# AI 画像生成の破棄済み候補（本番未使用）
+generated_*.png
+brand-title.png
+
+# デプロイ一時ディレクトリ
+_deploy/

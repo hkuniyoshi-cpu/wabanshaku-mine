@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1B1815">
+<title>和晩酌 嶺 ブログ</title>
+<meta name="description" content="和晩酌 嶺 からのお知らせ・季節の便り">
+<meta http-equiv="content-language" content="ja">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="和晩酌 嶺">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://wabanshaku-mine.search-mania.net/ogp.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F7F3EC;color:#2B2622;font-family:'Noto Sans JP',sans-serif;line-height:1.9;-webkit-font-smoothing:antialiased}
+header{background:#1B1815;padding:22px 20px;text-align:center;border-bottom:1px solid rgba(176,138,62,.24);position:sticky;top:0;z-index:10}
+header a{color:#F0E7D5;text-decoration:none;font-size:16px;letter-spacing:.4em;font-family:'Noto Serif JP',serif;font-weight:500}
+header .en{display:block;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.28em;color:#B08A3E;margin-top:4px;font-style:italic}
+.wrap{max-width:720px;margin:70px auto;padding:0 24px 100px}
+.loading{text-align:center;padding:130px 0;color:#8E8678;font-size:12px;letter-spacing:.32em;font-family:'Cormorant Garamond',serif;font-style:italic}
+.loading::after{content:'Loading';display:block;animation:fade 1.4s ease-in-out infinite}
+@keyframes fade{0%,100%{opacity:.4}50%{opacity:1}}
+.card{background:#fff;border-radius:2px;overflow:hidden;box-shadow:0 8px 40px rgba(27,24,21,.08)}
+.card img{width:100%;display:block;max-height:520px;object-fit:cover}
+.card-body{padding:44px 44px 52px}
+.card .date{font-size:11px;color:#8E8678;letter-spacing:.28em;font-family:'Cormorant Garamond',serif;font-style:italic;display:block}
+.card h1{margin:16px 0 32px;font-size:24px;line-height:1.7;font-weight:600;font-family:'Noto Serif JP',serif;color:#2B2622;letter-spacing:.04em}
+.card .text{font-size:15px;line-height:2.1;white-space:pre-wrap;color:#4A4540;word-break:break-word}
+.back-wrap{margin-top:56px;text-align:center}
+.back-btn{display:inline-block;padding:14px 40px;border:1px solid #2B2622;color:#2B2622;text-decoration:none;font-size:12px;letter-spacing:.32em;font-family:'Cormorant Garamond',serif;font-style:italic;transition:all .35s ease}
+.back-btn:hover{background:#2B2622;color:#F7F3EC}
+.not-found{text-align:center;padding:100px 24px;font-family:'Noto Serif JP',serif}
+.not-found h1{font-size:22px;margin-bottom:18px;color:#2B2622;letter-spacing:.14em}
+.not-found p{font-size:14px;color:#8E8678;margin-bottom:36px;line-height:1.9}
+.produced-by{text-align:center;margin-top:72px;font-size:10px;letter-spacing:.32em;color:rgba(43,38,34,.4);text-transform:uppercase;font-family:'Cormorant Garamond',serif;font-style:italic}
+.produced-by a{color:rgba(43,38,34,.6);text-decoration:none;transition:color .3s ease}
+.produced-by a:hover{color:#B08A3E}
+@media (max-width:600px){
+  .wrap{margin:32px auto;padding:0 16px 60px}
+  .card-body{padding:28px 24px 34px}
+  .card h1{font-size:19px;margin:12px 0 22px}
+  .card .text{font-size:14.5px;line-height:1.95}
+  header a{font-size:14px;letter-spacing:.32em}
+  .back-btn{padding:13px 30px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<header><a href="/">和晩酌 嶺<span class="en">Wa Banshaku Mine</span></a></header>
+<div class="wrap" id="root"><div class="loading"></div></div>
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe8NzPOyOwqPrWUjbeFAVYC2fz-RUAPBlN8lAOg1dT_6zwpu6jCz7_k5JbNskWSDK8PA/exec';
+const SITE_URL = 'https://wabanshaku-mine.search-mania.net';
+const STORE_NAME = '和晩酌 嶺';
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fmtDate(s){if(!s)return'';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[1]+'.'+m[2]+'.'+m[3]:String(s)}
+function driveImg(url){if(!url)return'';const s=String(url).trim();const m1=s.match(/\/d\/([a-zA-Z0-9_-]{20,})/);if(m1)return'https://lh3.googleusercontent.com/d/'+m1[1]+'=w1600';const m2=s.match(/[?&]id=([a-zA-Z0-9_-]{20,})/);if(m2)return'https://lh3.googleusercontent.com/d/'+m2[1]+'=w1600';const m3=s.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]{20,})/);if(m3)return'https://lh3.googleusercontent.com/d/'+m3[1]+'=w1600';return s}
+function getSlug(){const p=new URLSearchParams(location.search);if(p.get('post'))return p.get('post');const m=location.pathname.match(/\/blog\/([^\/]+)\/?$/);return m?m[1]:''}
+function getN(){const p=new URLSearchParams(location.search);const n=p.get('n');return(n!==null&&n!=='')?parseInt(n,10):-1}
+function findBySlug(items,slug,n){if(!Array.isArray(items))return null;if(n>=0&&n<items.length&&items[n])return items[n];if(!slug)return null;return items.find(function(b){if(!b)return false;if(b.url&&(b.url.indexOf('/blog/'+slug+'/')!==-1||b.url.indexOf('/blog/'+slug)!==-1))return true;if(b.date){var d=String(b.date).replace(/[\/\.]/g,'-').replace(/[^0-9-]/g,'');if(d===slug)return true}return false})||null}
+function updateMeta(title,desc,imgUrl){document.title=title+' | '+STORE_NAME;const m1=document.querySelector('meta[name="description"]');if(m1)m1.setAttribute('content',desc);function upsert(a,v,c){let el=document.querySelector('meta['+a+'="'+v+'"]');if(!el){el=document.createElement('meta');el.setAttribute(a,v);document.head.appendChild(el)}el.setAttribute('content',c)}upsert('property','og:title',title);upsert('property','og:description',desc);upsert('property','og:url',SITE_URL+location.pathname+location.search);upsert('name','twitter:title',title);upsert('name','twitter:description',desc);if(imgUrl){upsert('property','og:image',imgUrl);upsert('name','twitter:image',imgUrl)}let canonical=document.querySelector('link[rel="canonical"]');if(!canonical){canonical=document.createElement('link');canonical.setAttribute('rel','canonical');document.head.appendChild(canonical)}canonical.setAttribute('href',SITE_URL+location.pathname+location.search)}
+function render(item){const root=document.getElementById('root');if(!item){root.innerHTML='<div class="not-found"><h1>記事が見つかりません</h1><p>指定された記事は削除されたか、URLが正しくない可能性があります。</p><a class="back-btn" href="'+esc(SITE_URL)+'/">← Back to Top</a></div>';document.title='記事が見つかりません | '+STORE_NAME;return}const imgUrl=driveImg(item.image);let title=(item.title||'').trim();if(!title&&item.body)title=String(item.body).split(/[。\n]/)[0].trim();if(!title&&item.date)title=fmtDate(item.date)+' の投稿';const desc=(item.body||title).slice(0,120);updateMeta(title,desc,imgUrl);(function(){const e=document.getElementById('blog-jsonld');if(e)e.remove();const sd=document.createElement('script');sd.id='blog-jsonld';sd.type='application/ld+json';sd.textContent=JSON.stringify({'@context':'https://schema.org','@type':'BlogPosting','headline':title,'description':desc,'datePublished':item.date||'','image':imgUrl||'','url':SITE_URL+location.pathname+location.search,'inLanguage':'ja','publisher':{'@type':'Restaurant','name':STORE_NAME,'url':SITE_URL}});document.head.appendChild(sd)})();root.innerHTML='<article class="card">'+(imgUrl?'<img src="'+esc(imgUrl)+'" alt="'+esc(title)+'" loading="eager">':'')+'<div class="card-body">'+(item.date?'<span class="date">'+esc(fmtDate(item.date))+'</span>':'')+(item.title&&item.title.trim()?'<h1>'+esc(item.title)+'</h1>':'')+'<p class="text">'+esc(item.body||'')+'</p></div></article><div class="back-wrap"><a class="back-btn" href="'+esc(SITE_URL)+'/">← Back to Top</a></div><div class="produced-by">Produced by <a href="https://search-mania.net/" target="_blank" rel="noopener noreferrer">SearchMania Inc.</a></div>'}
+(function(){const slug=getSlug();const n=getN();if(!slug&&n<0){render(null);return}fetch(GAS_URL+(GAS_URL.indexOf('?')>=0?'&':'?')+'blog_all=1').then(function(r){return r.json()}).then(function(data){render(findBySlug(data&&data.blog,slug,n))}).catch(function(err){console.warn('CMS fetch error:',err);fetch(GAS_URL).then(function(r){return r.json()}).then(function(data){render(findBySlug(data&&data.blog,slug,n))}).catch(function(){render(null)})})})();
+</script>
+</body>
+</html>

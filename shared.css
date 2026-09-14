@@ -1231,11 +1231,33 @@ a { color: inherit; text-decoration: none; }
   .hero-eyebrow::before, .hero-eyebrow::after { display: none; }
   .hero-title .jp { letter-spacing: .18em; }
   .hero-title .en { letter-spacing: .32em; }
+  .hero-mark { width: min(78vw, 480px); max-height: 34vh; }
   .hero-sub { font-size: 13.5px; letter-spacing: .22em; }
   .split-main .section { padding: 72px 20px; }
   .sec-head { margin-bottom: 44px; }
+  .sec-title { font-size: clamp(22px, 6vw, 28px); letter-spacing: .22em; padding-left: .22em; }
   .aside-brand .brand-jp { font-size: 30px; letter-spacing: .18em; }
+  /* Mobile aside: shorter banner, no vertical calligraphy overlap */
+  .split-aside { height: 46vh; height: 46svh; min-height: 320px; }
+  .aside-vertical { display: none; }
+  .aside-inner { padding: 22px 20px; }
+  .aside-brand { max-width: none; }
+  .aside-nav { gap: 14px 20px; margin-top: 18px; }
+  .aside-nav a { font-size: 10.5px; letter-spacing: .24em; }
+  .aside-brand-logo { width: 60px; height: 60px; margin-bottom: 14px; }
+  .chef-portrait { max-height: 52vh; }
   .cta-band { padding: 80px 20px; }
+  .footer { padding: 48px 20px 28px; }
+  .footer-info p, .footer-desc, .partner-notice-inline { font-size: 12px; line-height: 1.9; }
+  .concept-panel { padding: 60px 20px; gap: 24px; }
+  .concept-panel-image { min-height: 260px; }
+  .concept-panel-text { padding: 26px 22px; }
+  .concept-panel h2 { font-size: clamp(24px, 6vw, 30px); letter-spacing: .18em; padding-left: .18em; }
+  .top-nav { padding: 16px 20px; }
+  .top-nav.scrolled { padding: 12px 20px; }
+  .top-nav-brand-logo { width: 34px; height: 34px; }
+  .top-nav-logo { gap: 10px; font-size: 12px; letter-spacing: .22em; }
+  .top-nav-cta { font-size: 11.5px; letter-spacing: .14em; }
 
   /* Unified mobile carousel — Menu / Scenes / Reviews / Blog wall / Delivery cards.
      grid-template-columns:unset + grid-auto-rows:unset kills any tablet grid overrides. */

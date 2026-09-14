@@ -390,7 +390,7 @@ body { font-family: 'Noto Sans TC', sans-serif !important; }
 /* ============================================================
    Constants
    ============================================================ */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz6iXcNw4VjLzgAvGjCw2t-QRdDNnXbs_OmRegGkwT_Yel0bmDDg5nH76xtga19c4AbjQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw59goi8aqgNHX0beXSzgf0n2L-6sBkLqoI5GlUgewN8WeG2Fht8APRZ7KlKZpTzUP1aw/exec';
 const _drv = id => 'https://lh3.googleusercontent.com/d/' + id;
 const DRIVE_FALLBACK = {
   hero: [
@@ -864,7 +864,7 @@ async function loadCMS() {
     }
   } catch (e) {}
   try {
-    const r = await fetch(GAS_URL, { redirect: 'follow' });
+    const r = await fetch(GAS_URL + (GAS_URL.indexOf('?') >= 0 ? '&' : '?') + 'lang=zh', { redirect: 'follow' });
     const d = await r.json();
     applyAll(d);
     _hideLoader();

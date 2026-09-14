@@ -9,7 +9,7 @@
  * Cache: 15分
  */
 
-const GAS_URL       = 'https://script.google.com/macros/s/AKfycbz6iXcNw4VjLzgAvGjCw2t-QRdDNnXbs_OmRegGkwT_Yel0bmDDg5nH76xtga19c4AbjQ/exec';
+const GAS_URL       = 'https://script.google.com/macros/s/AKfycbw59goi8aqgNHX0beXSzgf0n2L-6sBkLqoI5GlUgewN8WeG2Fht8APRZ7KlKZpTzUP1aw/exec';
 const SITE_URL      = 'https://wabanshaku-mine.search-mania.net';
 const STORE_NAME    = '和晩酌 嶺';
 const STORE_NAME_EN = 'Wa-banshaku Mine';

@@ -761,8 +761,15 @@ function applyBlog(items) {
     if (!t && b.date) t = fmtDate(b.date) + ' の投稿';
     const st = t.length > 44 ? t.slice(0, 44) + '…' : t;
     const img = driveImg(b.image);
-    const sm = (b.url || '').match(/\/blog\/([^\/\?#]+)/);
-    const slug = sm ? sm[1] : (b.date || '');
+    // Extract slug: full URL (contains /blog/) or short form (bare slug like "2026-09-17-0638/")
+    let slug = '';
+    if (b.url) {
+      const raw = String(b.url).replace(/\/+$/, '');
+      const m = raw.match(/\/blog\/([^\/\?#]+)/);
+      if (m) slug = m[1];
+      else slug = raw.split('/').pop();
+    }
+    if (!slug) slug = b.date || '';
     const href = slug ? '/blog/' + slug + '/' : null;
     const open = href ? '<a href="'+esc(href)+'" class="blog-card">' : '<article class="blog-card">';
     const close = href ? '</a>' : '</article>';

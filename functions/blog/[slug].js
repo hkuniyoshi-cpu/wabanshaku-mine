@@ -9,7 +9,7 @@
  * Cache: 15分
  */
 
-const GAS_URL       = 'https://script.google.com/macros/s/AKfycbxe8NzPOyOwqPrWUjbeFAVYC2fz-RUAPBlN8lAOg1dT_6zwpu6jCz7_k5JbNskWSDK8PA/exec';
+const GAS_URL       = 'https://script.google.com/macros/s/AKfycbw59goi8aqgNHX0beXSzgf0n2L-6sBkLqoI5GlUgewN8WeG2Fht8APRZ7KlKZpTzUP1aw/exec';
 const SITE_URL      = 'https://wabanshaku-mine.search-mania.net';
 const STORE_NAME    = '和晩酌 嶺';
 const STORE_NAME_EN = 'Wa-banshaku Mine';
@@ -196,7 +196,7 @@ ${JSON.stringify(jsonLd)}
     ${imgUrl ? `<img src="${esc(imgUrl)}" alt="${esc(title)}" loading="eager">` : ''}
     <div class="card-body">
       ${date ? `<span class="date">${esc(dateFmt)}</span>` : ''}
-      ${post.title && String(post.title).trim() ? `<h1>${esc(post.title)}</h1>` : ''}
+      <h1>${esc(title)}</h1>
       <p class="text">${esc(bodyRaw)}</p>
     </div>
   </article>

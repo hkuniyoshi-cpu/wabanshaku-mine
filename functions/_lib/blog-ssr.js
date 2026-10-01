@@ -4,8 +4,10 @@
  *   /en/blog/{slug}/     英語（GAS ?blog_one=&lang=en → OpenAI 翻訳・blog_i18n シート保存）
  *   /zh-tw/blog/{slug}/  繁体字（同 lang=zh）
  *
- * 3 言語は hreflang で相互リンク。翻訳に失敗した時は日本語原文を表示し noindex にする
- * （未翻訳ページが EN/繁の検索結果に出るのを防ぐ）。
+ * 3 言語は hreflang で相互リンク。訳文は GAS の 30 分トリガーで事前生成され、
+ * サイトマップにも訳文がある記事だけ載る。万一未翻訳の時は日本語原文を表示しつつ
+ * HTTP 503 + Retry-After を返す（noindex は付けない → Google は一時的と判断して後で再訪、
+ * 訳文ができ次第そのままインデックスされる。訪問者には本文が普通に見える）。
  *
  * GAS_URL は functions 配下ではここ 1 か所だけ。GAS 新デプロイ時は index.html ×3 とここを差し替え。
  */
@@ -23,6 +25,7 @@ const LANGS = {
     nfTitle: '記事が見つかりません',
     nfText: '指定された記事は削除されたか、URL が正しくない可能性があります。',
     errTitle: '一時的なエラー',
+    pending: '',
     font: 'Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700',
     serif: "'Shippori Mincho',serif", sans: "'Zen Kaku Gothic New','Hiragino Sans',sans-serif",
   },
@@ -35,6 +38,7 @@ const LANGS = {
     nfTitle: 'Article not found',
     nfText: 'This article may have been removed, or the URL may be incorrect.',
     errTitle: 'Temporary error',
+    pending: 'The English translation is being prepared. Showing the original Japanese for now.',
     font: 'Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700',
     serif: "'Shippori Mincho',Georgia,serif", sans: "'Zen Kaku Gothic New',system-ui,sans-serif",
   },
@@ -47,6 +51,7 @@ const LANGS = {
     nfTitle: '找不到文章',
     nfText: '此文章可能已被刪除，或網址有誤。',
     errTitle: '暫時性錯誤',
+    pending: '中文翻譯準備中，目前先顯示日文原文。',
     font: 'Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700',
     serif: "'Noto Serif TC',serif", sans: "'Noto Sans TC','PingFang TC',sans-serif",
   },
@@ -96,8 +101,14 @@ export async function handleBlog(context, langKey) {
       } catch (_) { /* 原文フォールバック */ }
     }
 
-    return html(renderPost(L, langKey, post, decoded, translated), 200, {
-      'Cache-Control': translated ? 'public, max-age=900, s-maxage=900' : 'public, max-age=60, s-maxage=60',
+    if (!translated) {
+      return html(renderPost(L, langKey, post, decoded, false), 503, {
+        'Retry-After': '1800',
+        'Cache-Control': 'no-store',
+      });
+    }
+    return html(renderPost(L, langKey, post, decoded, true), 200, {
+      'Cache-Control': 'public, max-age=900, s-maxage=900',
     });
   } catch (err) {
     return html(renderError(L, String((err && err.message) || err)), 500);
@@ -216,7 +227,6 @@ function renderPost(L, langKey, post, slug, translated) {
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0C0A08">
 <meta http-equiv="content-language" content="${L.htmlLang}">
-${translated ? '' : '<meta name="robots" content="noindex,follow">'}
 <title>${esc(title)} | ${esc(L.store)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(canonical)}">
@@ -261,6 +271,7 @@ header .brand{color:var(--ink);text-decoration:none;font-size:17px;letter-spacin
 article.card{background:var(--card);border-radius:4px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.12)}
 article.card img{width:100%;display:block;max-height:480px;object-fit:cover}
 .card-body{padding:36px 38px 44px}
+.notice{font-size:12px;color:var(--gold);border:1px solid rgba(201,168,96,.4);padding:10px 14px;margin-bottom:22px;line-height:1.7}
 .date{font-size:12px;color:var(--muted);letter-spacing:.24em;display:block}
 h1{margin:14px 0 28px;font-size:22px;line-height:1.7;font-weight:600;font-family:${L.serif};color:var(--paper);letter-spacing:.04em;overflow-wrap:anywhere}
 .text{font-size:15px;line-height:2.05;white-space:pre-wrap;color:var(--muted);overflow-wrap:anywhere}
@@ -289,6 +300,7 @@ ${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
   <article class="card">
     ${imgUrl ? `<img src="${esc(imgUrl)}" alt="${esc(title)}" loading="eager">` : ''}
     <div class="card-body">
+      ${translated ? '' : `<p class="notice">${L.pending}</p>`}
       ${date ? `<time class="date" datetime="${esc(date)}">${esc(fmtDate(date))}</time>` : ''}
       <h1>${esc(title)}</h1>
       <p class="text">${esc(bodyRaw)}</p>

@@ -1297,3 +1297,69 @@ a { color: inherit; text-decoration: none; }
   .reveal, .gallery-item { opacity: 1 !important; transform: none !important; }
   [data-parallax] { transform: none !important; }
 }
+
+/* ============================================================
+   接待コース PR 帯（オーナー依頼 2026-10-01 ⑧）
+   ヒーロー直下のフル幅帯 + 大将おまかせ内のリンクカード
+   ============================================================ */
+.settai-band {
+  position: relative;
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: clamp(56px, 8vw, 96px) 24px;
+  text-align: center;
+  overflow: hidden;
+}
+.settai-band::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, var(--gold-soft) 0%, transparent 62%);
+  opacity: .55;
+  pointer-events: none;
+}
+.settai-inner { position: relative; max-width: 760px; margin: 0 auto; min-width: 0; }
+.settai-eyebrow {
+  font-family: var(--serif-en); font-size: 12px; letter-spacing: .38em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+}
+.settai-title {
+  font-family: var(--serif-jp); font-weight: 500; font-style: normal;
+  font-size: clamp(20px, 3.2vw, 30px); line-height: 1.7; letter-spacing: .12em;
+  color: var(--ink); overflow-wrap: anywhere; min-width: 0;
+}
+.settai-sep { color: var(--gold); margin: 0 .4em; }
+.settai-detail {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: 8px 28px; margin: 28px 0 14px;
+}
+.settai-dishes { font-size: 15px; letter-spacing: .14em; color: var(--ink-2); }
+.settai-price {
+  font-family: var(--serif-en); font-size: clamp(26px, 4vw, 36px);
+  letter-spacing: .06em; color: var(--gold-2);
+}
+.settai-note { font-size: 13px; line-height: 2; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 34px; }
+.settai-cta { white-space: nowrap; }
+
+.menu-settai {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-top: 30px; padding: 26px 28px;
+  border: 1px solid var(--gold-soft);
+  background: linear-gradient(135deg, rgba(201,168,96,.08), transparent 70%);
+  color: inherit; text-decoration: none;
+  transition: border-color .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.menu-settai:hover { border-color: var(--gold); transform: translateY(-3px); }
+.menu-settai .menu-badge { margin-bottom: 4px; }
+.menu-settai-name { font-family: var(--serif-jp); font-size: 17px; letter-spacing: .14em; color: var(--ink); }
+.menu-settai-meta { font-size: 13px; letter-spacing: .08em; color: var(--gold-2); }
+
+@media (max-width: 720px) {
+  .settai-sep { display: none; }
+  .settai-title-2 { display: block; }
+  .settai-title { letter-spacing: .08em; }
+  .settai-dishes { font-size: 14px; }
+  .menu-settai { padding: 22px 20px; }
+}
+/* 和文は文節（<wbr>）でのみ改行 */
+.settai-title, .settai-note, .settai-dishes { word-break: keep-all; }

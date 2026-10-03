@@ -12,7 +12,7 @@
  * GAS_URL は functions 配下ではここ 1 か所だけ。GAS 新デプロイ時は index.html ×3 とここを差し替え。
  */
 
-export const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyU2V3MZqpBHII6gYOGiK6R8fpOqYJZUglJTg80unAuw6eHn5Oo64AhhW16lq2oYnvlEQ/exec';
+export const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwJkNPFu7kEw9dmyQduz0GvIAgm1uoYVnvVX_zAoWOEoUAy-TDt9xN8nZ4ZS60z3xsklA/exec';
 export const SITE_URL = 'https://wabanshaku-mine.search-mania.net';
 
 const LANGS = {

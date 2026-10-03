@@ -77,7 +77,8 @@ export async function handleBlog(context, langKey) {
     });
     if (!upstream.ok) return html(renderError(L, 'CMS upstream ' + upstream.status), 502);
     const data = await upstream.json();
-    const decoded = decodeURIComponent(slug);
+    let decoded;
+    try { decoded = decodeURIComponent(slug); } catch (_) { return html(renderNotFound(L, home), 404); }
     let post = findPost((data && data.blog) || [], decoded);
     if (!post) return html(renderNotFound(L, home), 404);
 
@@ -88,8 +89,9 @@ export async function handleBlog(context, langKey) {
       try {
         const tr = await fetch(GAS_URL + '?blog_one=' + encodeURIComponent(decoded) + '&lang=' + L.gas + '&v=2', {
           redirect: 'follow',
-          cf: { cacheTtl: 3600, cacheEverything: true },
-          signal: AbortSignal.timeout(25000), // 初回翻訳が詰まったら原文フォールバック
+          // 原文(900s)より短く。未翻訳応答が長く残って 503 が続くのを防ぐ
+          cf: { cacheTtl: 300, cacheEverything: true },
+          signal: AbortSignal.timeout(25000),
         });
         if (tr.ok) {
           const j = await tr.json();

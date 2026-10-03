@@ -790,7 +790,7 @@ function applyBlog(items) {
       else slug = raw.split('/').pop();
     }
     if (!slug) slug = b.date || '';
-    const href = slug ? '/blog/' + slug + '/' : null;
+    const href = slug ? '/blog/' + encodeURIComponent(slug) + '/' : null;
     const open = href ? '<a href="'+esc(href)+'" class="blog-card">' : '<article class="blog-card">';
     const close = href ? '</a>' : '</article>';
     return open+

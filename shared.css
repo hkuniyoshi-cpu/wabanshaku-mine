@@ -1363,3 +1363,60 @@ a { color: inherit; text-decoration: none; }
 }
 /* 和文は文節（<wbr>）でのみ改行 */
 .settai-title, .settai-note, .settai-dishes { word-break: keep-all; }
+
+/* ============================================================
+   昼（沖縄そば 嶺）への導線
+   - 上部ナビの「昼」リンク
+   - 予約 CTA 手前の和紙色の帯（夜の墨色のなかに昼の色を一枚はさむ）
+   - ページ間はクロスフェード（対応ブラウザのみ）
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+
+.top-nav-right { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 34px); }
+.top-nav-hiru {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px 7px 8px;
+  background: #F4EEE2; color: #1F1A16;
+  font-family: var(--serif-jp); font-size: 12px; letter-spacing: .16em; white-space: nowrap;
+  text-decoration: none;
+  transition: background .35s ease, color .35s ease;
+}
+.top-nav-hiru .hiru-k {
+  display: inline-grid; place-items: center; width: 22px; height: 22px;
+  background: #B5391F; color: #F4EEE2; font-size: 12px; font-weight: 700; letter-spacing: 0;
+}
+.top-nav-hiru:hover { background: #fff; }
+
+.hiru-band { background: #F4EEE2; color: #1F1A16; position: relative; z-index: 2; }
+.hiru-band-link {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center;
+  gap: clamp(24px, 5vw, 80px);
+  max-width: 1180px; margin: 0 auto; padding: clamp(56px, 8vw, 104px) 40px;
+  color: inherit; text-decoration: none;
+}
+.hiru-band-photo img { width: 100%; height: auto; filter: drop-shadow(0 22px 34px rgba(31,26,22,.26)); transition: transform .8s var(--ease-out); }
+.hiru-band-link:hover .hiru-band-photo img { transform: translateY(-6px) rotate(-1deg); }
+.hiru-band-text { min-width: 0; }
+.hiru-band-eyebrow { font-family: var(--serif-en); font-size: 12px; letter-spacing: .38em; text-transform: uppercase; color: #B5391F; margin-bottom: 16px; }
+.hiru-band-title { font-family: var(--serif-jp); font-weight: 600; font-style: normal; font-size: clamp(26px, 3.8vw, 44px); line-height: 1.5; letter-spacing: .12em; word-break: keep-all; overflow-wrap: anywhere; }
+.hiru-band-body { margin-top: 20px; font-size: 14.5px; line-height: 2.1; letter-spacing: .08em; color: #3D352E; word-break: keep-all; overflow-wrap: anywhere; }
+.hiru-band-info { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(31,26,22,.18); font-size: 13px; letter-spacing: .1em; color: #645A50; }
+.hiru-band-cta {
+  display: inline-block; margin-top: 26px; padding: 10px 2px 12px;
+  font-family: var(--serif-jp); font-size: 14px; letter-spacing: .22em; white-space: nowrap;
+  border-bottom: 1px solid #1F1A16; transition: letter-spacing .4s ease, color .3s ease, border-color .3s ease;
+}
+.hiru-band-link:hover .hiru-band-cta { color: #B5391F; border-color: #B5391F; letter-spacing: .28em; }
+.hiru-band-link:focus-visible { outline: 2px solid #B5391F; outline-offset: -6px; }
+
+@media (max-width: 720px) {
+  .top-nav-hiru { padding: 6px 10px 6px 6px; font-size: 11px; letter-spacing: .1em; }
+  .hiru-band-link { grid-template-columns: minmax(0, 1fr); padding: 52px 20px 60px; gap: 26px; }
+  .hiru-band-photo { max-width: 340px; margin: 0 auto; }
+}
+@media (max-width: 360px) {
+  .top-nav { padding-left: 14px; padding-right: 14px; }
+  .top-nav.scrolled { padding-left: 14px; padding-right: 14px; }
+  .top-nav-right { gap: 12px; }
+  .top-nav-logo > span[data-cms] { display: none; } /* 極小幅ではロゴマークのみ */
+}

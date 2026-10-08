@@ -1,0 +1,337 @@
+/* ============================================================
+   lunch.css — 沖縄そば 嶺（昼）
+   巻物のように右から左へ読み進む横スクロール＋縦書き。
+   - 基本（〜899px / 低い画面）: 通常の縦スクロール・横書き
+   - 横長画面（900px〜 かつ 高さ 620px〜）: html を rtl にして右端始まりの横スクロール
+   夜の「和晩酌 嶺」（墨色）と対になる、和紙色・墨・朱の配色。
+   ============================================================ */
+:root {
+  --paper:    #F4EEE2;
+  --paper-2:  #ECE4D4;
+  --paper-3:  #E2D8C4;
+  --ink:      #1F1A16;
+  --ink-2:    #3D352E;
+  --ink-soft: #645A50;
+  --shu:      #B5391F;
+  --shu-soft: rgba(181,57,31,.14);
+  --gold:     #9C7A2E;
+  --line:     rgba(31,26,22,.16);
+  --night:    #0C0A08;
+  --night-ink:#E8DFC8;
+  --night-gold:#C9A860;
+  --serif:    'Shippori Mincho','Yu Mincho','YuMincho','Hiragino Mincho ProN',serif;
+  --latin:    'Cormorant Garamond',Georgia,serif;
+  --rail:     84px;
+  --ease:     cubic-bezier(.22,1,.36,1);
+}
+
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+body {
+  background: var(--paper) url('./img/washi.webp') repeat;
+  background-size: 720px auto;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.95;
+  letter-spacing: .06em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+h1, h2, h3 { font-weight: 500; font-style: normal; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--shu); outline-offset: 4px; }
+.skip-link {
+  position: fixed; top: 8px; left: 8px; z-index: 100;
+  background: var(--ink); color: var(--paper); padding: 10px 16px; text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* ---------- 共通部品 ---------- */
+.yen { font-family: var(--latin); font-size: .72em; margin-right: .08em; }
+.price {
+  font-family: var(--latin); font-weight: 600; font-size: 30px; line-height: 1.1;
+  letter-spacing: .02em; color: var(--ink);
+}
+.price small { font-family: var(--serif); font-size: 11px; font-weight: 400; letter-spacing: .14em; color: var(--ink-soft); margin-left: 8px; }
+.tr { font-size: 12px; line-height: 1.7; letter-spacing: .02em; color: var(--ink-soft); }
+.tr b { display: block; font-weight: 500; color: var(--ink-2); letter-spacing: .03em; }
+.tr[lang="en"] { font-family: var(--latin); font-size: 14.5px; line-height: 1.45; }
+.tr[lang="en"] b { font-weight: 600; font-size: 15.5px; }
+.sec-v { font-size: 26px; letter-spacing: .22em; line-height: 1.5; }
+.sec-no { display: block; font-size: 12px; letter-spacing: .3em; color: var(--shu); margin-bottom: 6px; }
+.note-v, .omori { font-size: 12.5px; color: var(--ink-soft); }
+.dish-name, .ichiban-name, .jushi-name, .koda-h, .yoru-title { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* ---------- 柱（屋号・目次）: 基本は上部バー ---------- */
+.rail {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+  height: 56px; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: rgba(244,238,226,.94); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.rail-brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; white-space: nowrap; }
+.rail-brand-sub { font-size: 12px; letter-spacing: .24em; color: var(--ink-soft); }
+.rail-brand-main { font-size: 24px; font-weight: 700; line-height: 1; }
+.rail-nav { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.rail-nav::-webkit-scrollbar { display: none; }
+.rail-nav a { font-size: 12px; letter-spacing: .12em; text-decoration: none; white-space: nowrap; color: var(--ink-2); padding: 8px 0; }
+.rail-nav a.is-on { color: var(--shu); }
+
+/* ---------- 昼／夜 ---------- */
+.hiru-yoru {
+  position: fixed; z-index: 31; left: 50%; bottom: 14px; transform: translateX(-50%);
+  display: flex; border: 1px solid var(--ink); background: var(--paper);
+  box-shadow: 0 6px 24px rgba(31,26,22,.14);
+}
+.hy { display: flex; align-items: center; gap: 8px; padding: 9px 16px; text-decoration: none; white-space: nowrap; color: var(--ink); transition: background .3s var(--ease), color .3s var(--ease); }
+.hy-k { font-size: 16px; font-weight: 700; line-height: 1; }
+.hy-t { font-size: 11px; letter-spacing: .14em; }
+.hy-on { background: var(--ink); color: var(--paper); }
+a.hy:hover { background: var(--night); color: var(--night-gold); }
+.progress { display: none; }
+
+/* ---------- 各面（基本＝縦スクロール） ---------- */
+.panel { position: relative; padding: 64px 20px; border-bottom: 1px solid var(--line); }
+.panel > * { min-width: 0; }
+
+/* 扉 */
+.tobira { padding-top: 92px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 20px 16px; align-items: start; }
+.tobira-title { grid-column: 2; grid-row: 1; writing-mode: vertical-rl; display: flex; align-items: flex-start; gap: 10px; }
+.tobira-kicker { font-size: 12px; letter-spacing: .36em; color: var(--shu); }
+.tobira-h1 { display: flex; align-items: center; gap: 10px; line-height: 1; }
+.t-sub { font-size: 20px; letter-spacing: .3em; }
+.t-main { font-size: 92px; font-weight: 700; }
+.tobira-yomi { font-size: 10px; letter-spacing: .5em; color: var(--ink-soft); }
+.tobira-copy { grid-column: 1; grid-row: 1; writing-mode: vertical-rl; justify-self: end; font-size: 20px; letter-spacing: .26em; line-height: 2.1; height: 13em; }
+.tobira-photo { grid-column: 1 / -1; }
+.tobira-photo img { width: 100%; filter: drop-shadow(0 18px 28px rgba(31,26,22,.22)); }
+.tobira-info { grid-column: 1 / -1; display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+.tobira-info div, .annai-list div { display: grid; grid-template-columns: 6.5em minmax(0,1fr); gap: 12px; }
+.tobira-info dt, .annai-list dt { font-size: 12px; letter-spacing: .2em; color: var(--shu); padding-top: .2em; }
+.susumu { display: none; }
+
+/* 一番人気 */
+.ichiban { display: grid; gap: 18px; background: var(--paper-2); }
+.hanko {
+  width: 84px; height: 84px; border: 3px solid var(--shu); border-radius: 50%;
+  color: var(--shu); font-weight: 700; font-size: 20px; line-height: 1.15; letter-spacing: .08em;
+  writing-mode: vertical-rl; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transform: rotate(-8deg);
+}
+.eyebrow-v { display: none; }
+.ichiban-name { font-size: 28px; font-weight: 700; letter-spacing: .1em; line-height: 1.5; margin-bottom: 10px; }
+.ichiban-h { display: grid; gap: 12px; }
+.ichiban-h .price { font-size: 40px; }
+
+/* こだわり */
+.kodawari { display: grid; gap: 30px; }
+.koda-h { font-size: 20px; font-weight: 700; color: var(--shu); letter-spacing: .16em; margin-bottom: 6px; }
+.koda-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 999px 999px 0 0; }
+.koda-en { border-top: 1px solid var(--line); padding-top: 14px; font-family: var(--latin); }
+.koda-en summary { cursor: pointer; font-size: 15px; letter-spacing: .06em; color: var(--ink-2); padding: 6px 0; }
+.koda-en-body { display: grid; gap: 10px; padding-top: 8px; font-size: 15px; line-height: 1.5; letter-spacing: .01em; color: var(--ink-soft); }
+.koda-en-body b { color: var(--ink-2); font-weight: 600; margin-right: 6px; }
+
+/* お品書き */
+.shina { display: grid; gap: 44px; }
+.dish { display: grid; gap: 10px; }
+.dish-photo img { width: 100%; filter: drop-shadow(0 14px 22px rgba(31,26,22,.2)); }
+.dish-name { font-size: 22px; font-weight: 700; letter-spacing: .1em; line-height: 1.5; }
+.dish-h { display: grid; gap: 8px; }
+.omori { border-top: 1px solid var(--line); padding-top: 16px; }
+.omori span { display: block; font-family: var(--latin); font-size: 14px; letter-spacing: .02em; }
+.hiyashi { background: linear-gradient(180deg, rgba(120,150,170,.10), rgba(120,150,170,0) 60%); }
+
+/* じゅーしー */
+.jushi { display: grid; gap: 20px; background: var(--paper-2); }
+.jushi-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 999px 999px 0 0; }
+.jushi-name { font-size: 28px; font-weight: 700; letter-spacing: .14em; margin-bottom: 8px; }
+.jushi-h { display: grid; gap: 12px; }
+.pricelist { display: flex; gap: 28px; }
+.pricelist div { display: flex; align-items: baseline; gap: 10px; }
+.pricelist dt { font-size: 14px; letter-spacing: .2em; color: var(--shu); }
+.pricelist dd { font-family: var(--latin); font-weight: 600; font-size: 28px; line-height: 1; }
+
+/* お飲みもの */
+.nomimono { display: grid; gap: 26px; }
+.drinks { display: grid; }
+.drinks li { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px dotted var(--line); }
+.d-name { font-size: 16px; letter-spacing: .08em; }
+.d-name small { display: block; font-family: var(--latin); font-size: 13.5px; letter-spacing: .02em; color: var(--ink-soft); line-height: 1.4; }
+.d-price { font-family: var(--latin); font-weight: 600; font-size: 24px; white-space: nowrap; }
+.oshiharai { border: 1px solid var(--shu); padding: 18px 20px; display: grid; gap: 8px; }
+.oshiharai p:first-child { font-size: 15px; }
+.oshiharai p[lang] { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+.oshiharai p[lang="en"] { font-family: var(--latin); font-size: 14.5px; letter-spacing: .01em; }
+
+/* ご案内 */
+.annai { display: grid; gap: 24px; background: var(--paper-2); }
+.annai-list { display: grid; gap: 14px; }
+.annai-links { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.link-line {
+  display: inline-block; padding: 10px 2px; font-size: 14px; letter-spacing: .2em; text-decoration: none;
+  border-bottom: 1px solid var(--ink); white-space: nowrap; transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.link-line:hover { color: var(--shu); border-color: var(--shu); }
+
+/* 夜へ */
+.yoru { background: var(--night); color: var(--night-ink); border-bottom: 0; padding-bottom: 110px; display: grid; gap: 18px; }
+.yoru-kicker { font-size: 12px; letter-spacing: .36em; color: var(--night-gold); }
+.yoru-title { font-size: 32px; font-weight: 700; letter-spacing: .14em; line-height: 1.6; }
+.yoru-body { color: #B4A886; }
+.yoru-link {
+  justify-self: start; padding: 14px 4px; font-size: 15px; letter-spacing: .26em; text-decoration: none;
+  color: var(--night-gold); border-bottom: 1px solid var(--night-gold); white-space: nowrap;
+  transition: letter-spacing .4s var(--ease), color .3s var(--ease);
+}
+.yoru-link:hover { color: var(--night-ink); letter-spacing: .32em; }
+.yoru-link:focus-visible { outline-color: var(--night-gold); }
+.yoru-en { font-family: var(--latin); font-size: 15px; letter-spacing: .02em; color: #B4A886; line-height: 1.5; }
+.credit { font-size: 11px; letter-spacing: .12em; color: #7C7365; margin-top: 18px; }
+.credit a { color: var(--night-gold); text-decoration: none; }
+
+/* ---------- 登場の動き（JS 有効時のみ） ---------- */
+.js .rv { opacity: 0; transform: translateY(18px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.js .rv.in { opacity: 1; transform: none; }
+
+/* ============================================================
+   横スクロール（巻物）モード
+   ============================================================ */
+@media (min-width: 900px) and (min-height: 620px) {
+  html { direction: rtl; height: 100%; overflow-x: auto; overflow-y: hidden; overscroll-behavior: none; scroll-padding-right: var(--rail); scrollbar-width: thin; scrollbar-color: var(--paper-3) transparent; }
+  body { height: 100%; overflow: visible; }
+
+  .rail {
+    left: auto; right: 0; bottom: 0; width: var(--rail); height: auto; padding: 26px 0 22px;
+    direction: ltr; writing-mode: vertical-rl;
+    flex-direction: row; justify-content: flex-start; align-items: center; gap: 34px;
+    border-bottom: 0; border-left: 1px solid var(--line);
+  }
+  .rail-brand { align-items: center; gap: 8px; }
+  .rail-brand-sub { font-size: 12px; letter-spacing: .3em; }
+  .rail-brand-main { font-size: 34px; }
+  .rail-nav { gap: 22px; overflow: visible; }
+  .rail-nav a { font-size: 12.5px; letter-spacing: .26em; padding: 0 6px; position: relative; transition: color .3s var(--ease); }
+  .rail-nav a:hover { color: var(--shu); }
+  .rail-nav a.is-on::before { content: ''; position: absolute; right: -8px; top: 0; bottom: 0; width: 2px; background: var(--shu); }
+
+  .hiru-yoru { direction: ltr; left: 28px; top: 22px; bottom: auto; transform: none; box-shadow: none; }
+
+  .progress { display: block; direction: ltr; position: fixed; z-index: 29; left: 0; right: var(--rail); bottom: 0; height: 2px; background: var(--line); }
+  .progress span { display: block; height: 100%; background: var(--shu); transform-origin: right center; transform: scaleX(0); }
+
+  .makimono { display: flex; flex-direction: row; height: 100vh; height: 100dvh; width: max-content; padding-right: var(--rail); }
+  .panel {
+    direction: ltr; flex: none; height: 100%;
+    display: flex; flex-direction: row-reverse; align-items: center; gap: clamp(28px, 4vw, 64px);
+    padding: 96px clamp(40px, 5vw, 88px) 64px;
+    border-bottom: 0; border-left: 1px solid var(--line);
+  }
+
+  /* 縦書きにする塊 */
+  .sec-v, .body-v, .note-v, .ichiban-v, .dish-v, .jushi-v, .koda, .omori, .tobira-copy, .yoru-kicker, .yoru-title, .yoru-body {
+    writing-mode: vertical-rl;
+  }
+  .body-v { font-size: 15px; line-height: 2.1; letter-spacing: .14em; }
+  .sec-v { font-size: clamp(28px, 4.2vh, 40px); letter-spacing: .3em; align-self: flex-start; margin-top: 2vh; white-space: nowrap; }
+  .sec-no { margin: 0 0 0 10px; display: inline-block; font-size: 12px; }
+
+  /* 扉 */
+  .tobira { width: calc(100vw - var(--rail)); display: flex; padding-top: 80px; }
+  .tobira-title { flex-direction: column; gap: 14px; align-self: center; }
+  .tobira-kicker, .tobira-yomi, .t-sub { white-space: nowrap; }
+  .tobira-h1 { flex-direction: row; }
+  .tobira-kicker { font-size: 13px; }
+  .t-sub { font-size: clamp(22px, 3.4vh, 32px); }
+  .t-main { font-size: clamp(120px, 26vh, 230px); }
+  .tobira-yomi { font-size: 11px; }
+  .tobira-copy { font-size: clamp(20px, 3vh, 28px); height: auto; align-self: center; justify-self: auto; }
+  .tobira-photo { flex: 0 1 auto; width: min(44vw, 66vh); }
+  .tobira-info { position: absolute; left: clamp(40px, 5vw, 88px); bottom: 56px; border-top: 0; padding: 0; gap: 4px; font-size: 14px; }
+  .susumu {
+    display: flex; align-items: center; gap: 14px; position: absolute; left: clamp(40px, 5vw, 88px); top: 50%;
+    writing-mode: vertical-rl; font-size: 12px; letter-spacing: .4em; color: var(--ink-soft);
+  }
+  .susumu-line { display: block; width: 1px; height: 72px; background: var(--ink-soft); transform-origin: top; animation: susumu 2.4s var(--ease) infinite; }
+  @keyframes susumu { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* 一番人気 */
+  .ichiban { gap: 36px; align-items: center; }
+  .hanko { position: absolute; top: 96px; right: clamp(40px, 5vw, 88px); width: 104px; height: 104px; font-size: 25px; }
+  .ichiban-v { display: flex; flex-direction: column; gap: 22px; height: min(58vh, 540px); margin-top: 40px; }
+  .ichiban-name { font-size: clamp(30px, 5vh, 46px); margin: 0; letter-spacing: .18em; white-space: nowrap; }
+  .ichiban-h { width: 330px; align-self: flex-end; margin-bottom: 4vh; }
+  .ichiban-h .price { font-size: 56px; }
+
+  /* こだわり */
+  .kodawari { gap: clamp(30px, 3.4vw, 56px); }
+  .koda { height: min(54vh, 500px); display: flex; flex-direction: column; gap: 18px; }
+  .koda-h { margin: 0; font-size: 22px; letter-spacing: .24em; white-space: nowrap; }
+  .koda-photo { flex: none; width: min(26vw, 40vh); }
+  .koda-photo img { aspect-ratio: auto; height: min(64vh, 620px); width: 100%; }
+  .koda-photo-bonito { align-self: flex-end; margin-bottom: -64px; }
+  .koda-photo-bonito img { border-radius: 999px 999px 0 0; height: min(58vh, 560px); }
+  .koda-en { border-top: 0; border-right: 1px solid var(--line); padding: 0 24px 0 0; width: 150px; align-self: center; transition: width .5s var(--ease); }
+  .koda-en[open] { width: 420px; }
+
+  /* お品書き */
+  .shina { gap: clamp(36px, 4vw, 68px); }
+  .dish {
+    --photo: clamp(230px, 38vh, 340px);
+    grid-template-columns: var(--photo) auto; grid-template-areas: "photo v" "h h";
+    gap: 18px 18px; align-content: center; width: min-content;
+  }
+  .dish-photo { grid-area: photo; align-self: end; }
+  .dish-v { grid-area: v; display: flex; flex-direction: column; gap: 12px; height: calc(var(--photo) * .94); }
+  .dish-name { font-size: clamp(20px, 3.4vh, 28px); letter-spacing: .16em; }
+  .dish-v .body-v { font-size: 13.5px; line-height: 1.9; }
+  .dish-h { grid-area: h; border-top: 1px solid var(--line); padding-top: 12px; width: 0; min-width: 100%; }
+  .dish-lead { --photo: clamp(300px, 50vh, 460px); }
+  .omori { border-top: 0; padding: 0; height: 21em; font-size: 13px; letter-spacing: .14em; line-height: 2; align-self: center; }
+  .omori span { display: block; writing-mode: horizontal-tb; margin: 0 14px 0 0; white-space: nowrap; }
+
+  /* じゅーしー */
+  .jushi { gap: 40px; }
+  .jushi-photo { flex: none; width: min(26vw, 40vh); align-self: flex-end; margin-bottom: -64px; }
+  .jushi-photo img { aspect-ratio: auto; height: min(66vh, 640px); }
+  .jushi-v { display: flex; flex-direction: column; gap: 20px; height: min(52vh, 480px); }
+  .jushi-name { margin: 0; font-size: clamp(30px, 5vh, 44px); letter-spacing: .22em; white-space: nowrap; }
+  .jushi-h { width: 300px; align-self: flex-end; margin-bottom: 4vh; }
+
+  /* お飲みもの */
+  .nomimono { gap: 56px; }
+  .drinks { width: 400px; }
+  .oshiharai { width: 340px; }
+
+  /* ご案内 */
+  .annai { gap: 56px; }
+  .annai-list { width: 420px; }
+  .annai-links { flex-direction: column; align-items: flex-start; gap: 18px; }
+
+  /* 夜へ */
+  .yoru { width: min(62vw, 900px); padding-bottom: 64px; gap: clamp(28px, 4vw, 60px); border-left: 0; justify-content: center; }
+  .yoru-title { font-size: clamp(34px, 6vh, 56px); letter-spacing: .24em; }
+  .yoru-body { height: min(48vh, 420px); font-size: 15px; line-height: 2.2; letter-spacing: .16em; }
+  .yoru-link { writing-mode: vertical-rl; padding: 4px 14px; border-bottom: 0; border-left: 1px solid var(--night-gold); align-self: center; }
+  .yoru-link:hover { letter-spacing: .4em; }
+  .yoru-en { position: absolute; left: clamp(40px, 5vw, 88px); bottom: 84px; max-width: 320px; }
+  .credit { position: absolute; left: clamp(40px, 5vw, 88px); bottom: 28px; margin: 0; white-space: nowrap; }
+
+  .js .rv { transform: translateX(-28px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .rv { opacity: 1; transform: none; transition: none; }
+  .koda-en, .hy, .link-line, .yoru-link, .rail-nav a { transition: none; }
+  .susumu-line { animation: none; }
+}

@@ -887,8 +887,8 @@ function applyFAQ(items) {
 }
 function safeUrl(u, allowTel) {
   const v = String(u || '').trim();
-  if (/^https:///i.test(v)) return v;
-  if (allowTel && /^tel:[0-9+-() ]+$/i.test(v)) return v;
+  if (v.toLowerCase().indexOf('https://') === 0) return v;
+  if (allowTel && v.toLowerCase().indexOf('tel:') === 0 && v.slice(4).split('').every(function (ch) { return '0123456789+-() '.indexOf(ch) !== -1; })) return v;
   return '';
 }
 function applyCTA(c) {

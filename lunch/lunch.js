@@ -38,6 +38,18 @@
     window.scrollBy({ left: -d, top: 0, behavior: reduce ? 'instant' : 'smooth' });
   });
 
+  // 文節改行（BudouX）: 日本語の文章を文節の切れ目でだけ折り返す（縦書きにも効く）
+  try {
+    if (window.customElements && customElements.get('budoux-ja')) {
+      var bxParser = document.createElement('budoux-ja').parser;
+      document.querySelectorAll('.makimono h1, .makimono h2, .makimono h3, .makimono p, .makimono dt, .makimono dd, .makimono li, .makimono a, .rail a, .hiru-yoru .hy').forEach(function (el) {
+        if (el.closest('[lang="en"], [lang="zh-Hant"]') || el.querySelector('img')) return;
+        bxParser.applyToElement(el);
+        el.classList.add('bx');
+      });
+    }
+  } catch (e) { /* 改行調整は失敗しても表示に影響させない */ }
+
   // 屋号（嶺）を押したら巻物の先頭＝右端へ戻る（縦スクロール時はページ最上部）
   var brand = document.querySelector('.rail-brand');
   if (brand) brand.addEventListener('click', function (e) {

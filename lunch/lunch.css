@@ -355,3 +355,6 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
   .koda-en, .hy, .link-line, .yoru-link, .rail-nav a { transition: none; }
   .susumu-line { animation: none; }
 }
+
+/* 文節改行（BudouX が文節の切れ目に入れた改行位置でだけ折り返す） */
+.bx { word-break: keep-all; overflow-wrap: anywhere; line-break: strict; }

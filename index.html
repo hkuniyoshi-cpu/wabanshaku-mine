@@ -44,7 +44,8 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="./shared.css?v=20261008">
+<link rel="stylesheet" href="./shared.css?v=20261008b">
+<script src="/vendor/budoux-ja.min.js" defer></script>
 <meta name="google-site-verification" content="LZg90oxtbqi0v6An7Fc0uO3ufbqcmW4_Qp9mCI2u6wk">
 
 <script type="application/ld+json">
@@ -106,9 +107,9 @@
       "hasMenuSection": [{
         "@type": "MenuSection", "name": "大将おまかせ",
         "hasMenuItem": [
-          { "@type": "MenuItem", "name": "和晩酌5500コース（全5品）", "offers": { "@type": "Offer", "price": "5500", "priceCurrency": "JPY" } },
-          { "@type": "MenuItem", "name": "和晩酌6600コース（全7品）", "offers": { "@type": "Offer", "price": "6600", "priceCurrency": "JPY" } },
-          { "@type": "MenuItem", "name": "和晩酌7700コース（全9品）", "offers": { "@type": "Offer", "price": "7700", "priceCurrency": "JPY" } },
+          { "@type": "MenuItem", "name": "大将おまかせ お料理5品", "offers": { "@type": "Offer", "price": "5500", "priceCurrency": "JPY" } },
+          { "@type": "MenuItem", "name": "大将おまかせ お料理7品", "offers": { "@type": "Offer", "price": "6600", "priceCurrency": "JPY" } },
+          { "@type": "MenuItem", "name": "大将おまかせ お料理9品", "offers": { "@type": "Offer", "price": "7700", "priceCurrency": "JPY" } },
           { "@type": "MenuItem", "name": "ご接待におすすめ 2時間飲み放題付きコース（お料理7品）", "offers": { "@type": "Offer", "price": "9900", "priceCurrency": "JPY" } }
         ]
       }]
@@ -722,9 +723,9 @@ function applyGallery(hero, about, menu) {
   track.innerHTML = seq.map(u => '<div class="gallery-marquee-tile" style="background-image:url(&quot;'+esc(u)+'&quot;)"></div>').join('');
 }
 const MENU_FALLBACK = [
-  { name: '和晩酌5500コース', price: '5,500円（税込）', desc: 'お料理5品。お酒が中心の方におすすめの、おつまみのみのコース。', bestSeller: true },
-  { name: '和晩酌6600コース', price: '6,600円（税込）', desc: 'お料理7品。〆のお料理付きコース。' },
-  { name: '和晩酌7700コース', price: '7,700円（税込）', desc: 'お料理9品。一品追加に、〆のお料理とデザートが付いたコース。' }
+  { name: 'お料理5品', price: '5,500円（税込）', desc: 'お酒が中心の方におすすめの、おつまみのみのコース', bestSeller: true },
+  { name: 'お料理7品', price: '6,600円（税込）', desc: '〆のお料理付きコース' },
+  { name: 'お料理9品', price: '7,700円（税込）', desc: '一品追加に、〆のお料理とデザートが付いたコース' }
 ];
 function applyMenu(items) {
   const grid = document.getElementById('menuGrid');
@@ -1018,10 +1019,40 @@ const _revealIO = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
 
+
+/* ============================================================
+   文節改行（BudouX）: 日本語を文節の切れ目でだけ折り返す。
+   CMS で差し替わった文章にも効くよう、描画のたびに呼ぶ（処理済みの箇所は飛ばす）。
+   ============================================================ */
+const BX_TARGETS = '.hero-inner, #settai, .concept-story, .split-aside .aside-inner, .split-main, #hiru, .cta-band, .footer';
+function bxApply() {
+  if (!window.customElements) return;
+  if (!customElements.get('budoux-ja')) {
+    if (!bxApply.waiting) { bxApply.waiting = true; customElements.whenDefined('budoux-ja').then(bxApply); }
+    return;
+  }
+  try {
+    const parser = (bxApply.el || (bxApply.el = document.createElement('budoux-ja'))).parser;
+    if (!parser) return;
+    document.querySelectorAll(BX_TARGETS).forEach(root => {
+      root.classList.add('bx');
+      // 見出し・段落など文章のかたまり単位で処理し、内容が変わっていないものは飛ばす
+      root.querySelectorAll('h1, h2, h3, p, li, dt, dd, summary, blockquote, .qa-a, .btn-solid, .btn-outline, .hiru-band-cta, .menu-settai span').forEach(el => {
+        if (el.closest('[lang="en"], [lang="zh-Hant"]')) return;
+        const plain = el.textContent.replace(/\u200B/g, '');
+        if (el.__bx === plain) return;
+        parser.applyToElement(el);
+        el.__bx = plain;
+      });
+    });
+  } catch (e) { /* 改行調整は失敗しても表示に影響させない */ }
+}
+
 function rebindReveals() {
   // Only h2 underline + explicit .reveal marks (hero + concept + chef signature) animate.
   // Cards, reviews, gallery tiles just appear.
   document.querySelectorAll('.reveal:not(.is-visible), .sec-head:not(.is-visible), .feat:not(.is-visible)').forEach(el => _revealIO.observe(el));
+  bxApply();
 }
 
 /* ============================================================

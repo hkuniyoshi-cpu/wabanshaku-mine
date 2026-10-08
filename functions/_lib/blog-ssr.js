@@ -177,6 +177,8 @@ function toImageUrl(url) {
 }
 
 function renderPost(L, langKey, post, slug, translated) {
+  // 日本語だけ文節改行（BudouX）。<budoux-ja> で包むと文節の切れ目でのみ折り返す
+  const bx = (h) => (langKey === 'ja' ? `<budoux-ja>${h}</budoux-ja>` : h);
   let title = extractTitle(L, post);
   let bodyRaw = String(post.body || '');
   // Make 自動投稿は C列タイトル空・本文 1 行目が見出し → H1 に昇格し本文から除去（重複表示防止）
@@ -287,6 +289,7 @@ h1{margin:14px 0 28px;font-size:22px;line-height:1.7;font-weight:600;font-family
 @media (max-width:600px){.wrap{margin:30px auto;padding:0 16px 60px}.card-body{padding:26px 22px 32px}h1{font-size:19px;margin:12px 0 22px}.text{font-size:14.5px;line-height:1.95}header{padding:12px 16px}header .brand{font-size:14px;letter-spacing:.14em}.lang{font-size:11px;gap:6px}.btn{padding:13px 26px;font-size:12px}}
 </style>
 
+${langKey === 'ja' ? '<script src="/vendor/budoux-ja.min.js" defer></script>' : ''}
 <script type="application/ld+json">
 ${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
 </script>
@@ -304,8 +307,8 @@ ${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
     <div class="card-body">
       ${translated ? '' : `<p class="notice">${L.pending}</p>`}
       ${date ? `<time class="date" datetime="${esc(date)}">${esc(fmtDate(date))}</time>` : ''}
-      <h1>${esc(title)}</h1>
-      <p class="text">${esc(bodyRaw)}</p>
+      <h1>${bx(esc(title))}</h1>
+      <p class="text">${bx(esc(bodyRaw))}</p>
     </div>
   </article>
   <div class="actions">

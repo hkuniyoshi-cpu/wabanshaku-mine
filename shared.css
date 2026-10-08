@@ -1420,3 +1420,6 @@ a { color: inherit; text-decoration: none; }
   .top-nav-right { gap: 12px; }
   .top-nav-logo > span[data-cms] { display: none; } /* 極小幅ではロゴマークのみ */
 }
+
+/* 文節改行（BudouX が文節の切れ目に入れた改行位置でだけ折り返す） */
+.bx { word-break: keep-all; overflow-wrap: anywhere; line-break: strict; }

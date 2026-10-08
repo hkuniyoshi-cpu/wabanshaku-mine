@@ -39,9 +39,11 @@
   });
 
   // 文節改行（BudouX）: 日本語の文章を文節の切れ目でだけ折り返す（縦書きにも効く）
+  var bxReady = false;
   try {
     if (window.customElements && customElements.get('budoux-ja')) {
       var bxParser = document.createElement('budoux-ja').parser;
+      bxReady = !!bxParser;
       document.querySelectorAll('.makimono h1, .makimono h2, .makimono h3, .makimono p, .makimono dt, .makimono dd, .makimono li, .makimono a, .rail a, .hiru-yoru .hy').forEach(function (el) {
         // 英語・繁体字を含む要素、住所など実用情報（コピーされる文字列）は対象外
         if (el.closest('[lang="en"], [lang="zh-Hant"], .annai-list, .tobira-info') || el.querySelector('img, [lang="en"], [lang="zh-Hant"]')) return;
@@ -54,12 +56,13 @@
   // 文字が1つずつ、ひらりと現れる演出。
   // BudouX が入れた文節の切れ目（ゼロ幅スペース）ごとに「文節の箱」を作り、その中の文字を1つずつ動かす。
   // 文節の箱の途中では折り返さないので、文節改行はそのまま保たれる。
+  // 文節の切れ目が入っていない状態で分割すると、長い文が折り返せなくなるので、その場合は演出しない
   var fxEls = [];
-  if (!reduce) {
+  if (!reduce && bxReady) {
     try {
       var FX_SEL = '.tobira-kicker, .tobira-copy, .ichiban-name, .ichiban-v .body-v, .ichiban-v .note-v, .sec-v, .koda-h, .koda .body-v, .dish-name, .dish-v .body-v, .jushi-name, .jushi-v .body-v, .yoru-kicker, .yoru-title, .yoru-body';
       document.querySelectorAll(FX_SEL).forEach(function (el) {
-        if (el.querySelector('a, img, [lang]')) return;
+        if (el.querySelector('a, img, [lang]') || !el.classList.contains('bx')) return;
         var plain = el.textContent.replace(/\u200B/g, '').replace(/\s+/g, ' ').trim();
         if (!plain) return;
         var heading = /^H[1-6]$/.test(el.tagName) || el.classList.contains('tobira-copy');
@@ -169,11 +172,15 @@
     document.querySelectorAll('.dish-photo, .dish-h, .koda-photo, .ichiban-photo, .ichiban-h, .jushi-photo, .jushi-h, .drinks, .oshiharai, .annai-list, .annai-links, .yoru-link')
       .forEach(function (el) { el.classList.add('rv'); rv.observe(el); });
 
-    // 文字演出の開始: 画面に入ったら .cue を付ける
-    var cue = new IntersectionObserver(function (es) {
-      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('cue'); cue.unobserve(en.target); } });
-    }, { rootMargin: '0px -8% 0px -8%', threshold: 0.05 });
-    fxEls.forEach(function (el) { cue.observe(el); });
+    // 文字演出の開始: 画面に入ったら .cue を付ける。準備に失敗したら全部すぐ表示する
+    try {
+      var cue = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('cue'); cue.unobserve(en.target); } });
+      }, { rootMargin: '0px -8% 0px -8%', threshold: 0.05 });
+      fxEls.forEach(function (el) { cue.observe(el); });
+    } catch (e) {
+      fxEls.forEach(function (el) { el.classList.add('cue'); });
+    }
   } else {
     fxEls.forEach(function (el) { el.classList.add('cue'); });
   }

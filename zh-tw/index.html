@@ -891,7 +891,7 @@ function safeUrl(u, allowTel) {
 function applyCTA(c) {
   if (!c) return;
   const b1 = document.getElementById('ctaBtn1');
-  if (b1 && safeUrl(c.btn1Url)) b1.href = safeUrl(c.btn1Url);
+  if (b1 && safeUrl(c.btn1Url)) b1.href = safeUrl(c.btn1Url).replace('tablecheck.com/ja/', 'tablecheck.com/zh-TW/');
   const b2 = document.getElementById('ctaBtn2');
   if (b2 && safeUrl(c.btn2Url, true)) b2.href = safeUrl(c.btn2Url, true);
 }

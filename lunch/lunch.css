@@ -21,6 +21,7 @@
   --night-gold:#C9A860;
   --serif:    'Shippori Mincho','Yu Mincho','YuMincho','Hiragino Mincho ProN',serif;
   --latin:    'Cormorant Garamond',Georgia,serif;
+  --tint:     rgba(150,126,84,.11);
   --rail:     84px;
   --ease:     cubic-bezier(.22,1,.36,1);
 }
@@ -98,7 +99,18 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 .progress { display: none; }
 
 /* ---------- 各面（基本＝縦スクロール） ---------- */
-.panel { position: relative; padding: 64px 20px; border-bottom: 1px solid var(--line); }
+.panel {
+  position: relative; padding: 64px 20px 96px; border-bottom: 1px solid var(--line);
+  background-image: url('./img/yama-near.svg'); background-repeat: repeat-x; background-position: 30% 100%; background-size: 760px 84px;
+}
+.panel:nth-of-type(even) { background-position: 80% 100%; }
+/* 絵巻の背景（さりげなく）: 金砂子。横スクロール時はここに霞と遠山・近山を通しで描く */
+.makimono { background-image: url('./img/sunago.svg'); background-size: 900px 900px; }
+/* 扉の日輪と、夜の面の月。右（昼）から左（夜）へ */
+.tobira::before, .yoru::before { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
+.tobira::before { width: 230px; height: 230px; left: -40px; top: 430px; background: rgba(181,57,31,.09); }
+.yoru::before { width: 120px; height: 120px; right: 24px; top: 40px; background: rgba(201,168,96,.10); border: 1px solid rgba(201,168,96,.45); }
+.tobira > *, .yoru > * { position: relative; z-index: 1; }
 .panel > * { min-width: 0; }
 
 /* 扉 */
@@ -116,14 +128,16 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 .susumu { display: none; }
 
 /* 一番人気 */
-.ichiban { display: grid; gap: 18px; background: var(--paper-2); }
+.ichiban { display: grid; gap: 18px; background-color: var(--tint); }
+.ichiban-photo { position: relative; }
+.ichiban-photo img { width: 100%; filter: drop-shadow(0 18px 28px rgba(31,26,22,.22)); }
 .hanko {
+  position: absolute; z-index: 2; top: -14px; left: -6px; background: rgba(244,238,226,.9);
   width: 84px; height: 84px; border: 3px solid var(--shu); border-radius: 50%;
   color: var(--shu); font-weight: 700; font-size: 20px; line-height: 1.15; letter-spacing: .08em;
   writing-mode: vertical-rl; display: flex; flex-direction: column; align-items: center; justify-content: center;
   transform: rotate(-8deg);
 }
-.eyebrow-v { display: none; }
 .ichiban-name { font-size: 28px; font-weight: 700; letter-spacing: .1em; line-height: 1.5; margin-bottom: 10px; }
 .ichiban-h { display: grid; gap: 12px; }
 .ichiban-h .price { font-size: 40px; }
@@ -145,10 +159,10 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 .dish-h { display: grid; gap: 8px; }
 .omori { border-top: 1px solid var(--line); padding-top: 16px; }
 .omori span { display: block; font-family: var(--latin); font-size: 14px; letter-spacing: .02em; }
-.hiyashi { background: linear-gradient(180deg, rgba(120,150,170,.10), rgba(120,150,170,0) 60%); }
+.hiyashi { background-image: linear-gradient(180deg, rgba(120,150,170,.10), rgba(120,150,170,0) 60%); }
 
 /* じゅーしー */
-.jushi { display: grid; gap: 20px; background: var(--paper-2); }
+.jushi { display: grid; gap: 20px; background-color: var(--tint); }
 .jushi-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 999px 999px 0 0; }
 .jushi-name { font-size: 28px; font-weight: 700; letter-spacing: .14em; margin-bottom: 8px; }
 .jushi-h { display: grid; gap: 12px; }
@@ -170,7 +184,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 .oshiharai p[lang="en"] { font-family: var(--latin); font-size: 14.5px; letter-spacing: .01em; }
 
 /* ご案内 */
-.annai { display: grid; gap: 24px; background: var(--paper-2); }
+.annai { display: grid; gap: 24px; background-color: var(--tint); }
 .annai-list { display: grid; gap: 14px; }
 .annai-links { display: flex; flex-wrap: wrap; gap: 14px 28px; }
 .link-line {
@@ -180,7 +194,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 .link-line:hover { color: var(--shu); border-color: var(--shu); }
 
 /* 夜へ */
-.yoru { background: var(--night); color: var(--night-ink); border-bottom: 0; padding-bottom: 110px; display: grid; gap: 18px; }
+.yoru { background-color: var(--night); background-image: url('./img/yama-yoru.svg'); color: var(--night-ink); border-bottom: 0; padding-bottom: 150px; display: grid; gap: 18px; }
 .yoru-kicker { font-size: 12px; letter-spacing: .36em; color: var(--night-gold); }
 .yoru-title { font-size: 32px; font-weight: 700; letter-spacing: .14em; line-height: 1.6; }
 .yoru-body { color: #B4A886; }
@@ -225,12 +239,19 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
   .progress { display: block; direction: ltr; position: fixed; z-index: 29; left: 0; right: var(--rail); bottom: 0; height: 2px; background: var(--line); }
   .progress span { display: block; height: 100%; background: var(--shu); transform-origin: right center; transform: scaleX(0); }
 
-  .makimono { display: flex; flex-direction: row; height: 100vh; height: 100dvh; width: max-content; padding-right: var(--rail); }
+  .makimono {
+    display: flex; flex-direction: row; height: 100vh; height: 100dvh; width: max-content; padding-right: var(--rail);
+    background-image: url('./img/yama-near.svg'), url('./img/yama-far.svg'), url('./img/kasumi.svg'), url('./img/sunago.svg');
+    background-repeat: repeat-x, repeat-x, repeat-x, repeat;
+    background-position: 0 100%, 420px 100%, 0 9vh, 0 0;
+    background-size: 1300px 17vh, 1800px 27vh, 1600px 22vh, 900px 900px;
+  }
   .panel {
     direction: ltr; flex: none; height: 100%;
     display: flex; flex-direction: row-reverse; align-items: center; gap: clamp(28px, 4vw, 64px);
     padding: 96px clamp(40px, 5vw, 88px) 64px;
     border-bottom: 0; border-left: 1px solid var(--line);
+    background-image: none;
   }
 
   /* 縦書きにする塊 */
@@ -243,6 +264,9 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 
   /* 扉 */
   .tobira { width: calc(100vw - var(--rail)); display: flex; padding-top: 80px; }
+  .tobira::before { width: min(52vh, 460px); height: min(52vh, 460px); left: 9vw; top: 12vh; }
+  .yoru::before { width: min(20vh, 170px); height: min(20vh, 170px); right: auto; left: 12%; top: 14vh; }
+  .hiyashi { background-image: linear-gradient(180deg, rgba(120,150,170,.10), rgba(120,150,170,0) 60%); }
   .tobira-title { flex-direction: column; gap: 14px; align-self: center; }
   .tobira-kicker { white-space: nowrap; }
   .tobira-kicker { font-size: 13px; }
@@ -258,11 +282,12 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
   @keyframes susumu { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
 
   /* 一番人気 */
-  .ichiban { gap: 36px; align-items: center; }
-  .hanko { position: absolute; top: 96px; right: clamp(40px, 5vw, 88px); width: 104px; height: 104px; font-size: 25px; }
-  .ichiban-v { display: flex; flex-direction: column; gap: 22px; height: min(58vh, 540px); margin-top: 40px; }
+  .ichiban { gap: clamp(28px, 3.4vw, 52px); align-items: center; }
+  .ichiban-photo { flex: none; width: min(36vw, 58vh); }
+  .hanko { top: -26px; left: -30px; width: 104px; height: 104px; font-size: 25px; }
+  .ichiban-v { display: flex; flex-direction: column; gap: 22px; height: min(58vh, 540px); }
   .ichiban-name { font-size: clamp(30px, 5vh, 46px); margin: 0; letter-spacing: .18em; white-space: nowrap; }
-  .ichiban-h { width: 330px; align-self: flex-end; margin-bottom: 4vh; }
+  .ichiban-h { width: 300px; align-self: flex-end; margin-bottom: 6vh; }
   .ichiban-h .price { font-size: 56px; }
 
   /* こだわり */
@@ -311,7 +336,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
   .annai-links { flex-direction: column; align-items: flex-start; gap: 18px; }
 
   /* 夜へ */
-  .yoru { width: min(62vw, 900px); padding-bottom: 64px; gap: clamp(28px, 4vw, 60px); border-left: 0; justify-content: center; }
+  .yoru { width: min(62vw, 900px); padding-bottom: 64px; gap: clamp(28px, 4vw, 60px); border-left: 0; justify-content: center; background-image: url('./img/yama-yoru.svg'); background-repeat: repeat-x; background-position: 0 100%; background-size: 1300px 17vh; }
   .yoru-title { font-size: clamp(34px, 6vh, 56px); letter-spacing: .24em; }
   .yoru-body { height: min(48vh, 420px); font-size: 15px; line-height: 2.2; letter-spacing: .16em; }
   .yoru-link { writing-mode: vertical-rl; padding: 4px 14px; border-bottom: 0; border-left: 1px solid var(--night-gold); align-self: center; }

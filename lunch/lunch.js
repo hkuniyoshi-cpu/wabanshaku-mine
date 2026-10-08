@@ -46,7 +46,7 @@
       bxReady = !!bxParser;
       document.querySelectorAll('.makimono h1, .makimono h2, .makimono h3, .makimono p, .makimono dt, .makimono dd, .makimono li, .makimono a, .rail a, .hiru-yoru .hy').forEach(function (el) {
         // 英語・繁体字を含む要素、住所など実用情報（コピーされる文字列）は対象外
-        if (el.closest('[lang="en"], [lang="zh-Hant"], .annai-list, .tobira-info') || el.querySelector('img, [lang="en"], [lang="zh-Hant"]')) return;
+        if (el.closest('[lang="en"], [lang="zh-Hant"], .tobira-info, [data-nobx]') || el.querySelector('img, [lang="en"], [lang="zh-Hant"]')) return;
         bxParser.applyToElement(el);
         el.classList.add('bx');
       });

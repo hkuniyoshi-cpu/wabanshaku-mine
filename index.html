@@ -1025,7 +1025,7 @@ const _revealIO = new IntersectionObserver((entries) => {
    CMS で差し替わった文章にも効くよう、描画のたびに呼ぶ（処理済みの箇所は飛ばす）。
    ============================================================ */
 const BX_TARGETS = '.hero-inner, #settai, .concept-story, .split-aside .aside-inner, .split-main, #hiru, .cta-band';
-const BX_SKIP = '[lang="en"], [lang="zh-Hant"], #access, .access-info, address';
+const BX_SKIP = '[lang="en"], [lang="zh-Hant"], address, [data-cms="settings.住所"], [data-cms="settings.電話番号"], a[href^="tel:"]';
 function bxApply() {
   if (!window.customElements) return;
   if (!customElements.get('budoux-ja')) {

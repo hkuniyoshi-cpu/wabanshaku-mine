@@ -38,6 +38,14 @@
     window.scrollBy({ left: -d, top: 0, behavior: reduce ? 'instant' : 'smooth' });
   });
 
+  // 屋号（嶺）を押したら巻物の先頭＝右端へ戻る（縦スクロール時はページ最上部）
+  var brand = document.querySelector('.rail-brand');
+  if (brand) brand.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.scrollTo({ left: 0, top: 0, behavior: reduce ? 'instant' : 'smooth' });
+    if (history.replaceState) history.replaceState(null, '', location.pathname);
+  });
+
   // 進み具合
   var ticking = false;
   function progress() {

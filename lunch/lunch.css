@@ -109,7 +109,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 /* 扉の日輪と、夜の面の月。右（昼）から左（夜）へ */
 .tobira::before, .yoru::before { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
 .tobira::before { width: 230px; height: 230px; left: -40px; top: 430px; background: rgba(181,57,31,.09); }
-.yoru::before { width: 120px; height: 120px; right: 24px; top: 40px; background: rgba(201,168,96,.10); border: 1px solid rgba(201,168,96,.45); }
+.yoru::before { width: 150px; height: 150px; right: 14px; top: 26px; border-radius: 0; background: url('./img/tsuki.svg') center / contain no-repeat; } /* 三日月 */
 .tobira > *, .yoru > * { position: relative; z-index: 1; }
 .panel > * { min-width: 0; }
 
@@ -265,7 +265,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
   /* 扉 */
   .tobira { width: calc(100vw - var(--rail)); display: flex; padding-top: 80px; }
   .tobira::before { width: min(52vh, 460px); height: min(52vh, 460px); left: 9vw; top: 12vh; }
-  .yoru::before { width: min(20vh, 170px); height: min(20vh, 170px); right: auto; left: 12%; top: 14vh; }
+  .yoru::before { width: min(30vh, 250px); height: min(30vh, 250px); right: auto; left: 9%; top: 11vh; }
   .hiyashi { background-image: linear-gradient(180deg, rgba(120,150,170,.10), rgba(120,150,170,0) 60%); }
   .tobira-title { flex-direction: column; gap: 14px; align-self: center; }
   .tobira-kicker { white-space: nowrap; }

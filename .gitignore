@@ -32,3 +32,8 @@ brand-title.png
 
 # デプロイ一時ディレクトリ
 _deploy/
+
+# 社内資料・旧設定（公開しない）
+HANDOFF.md
+CITATION-CHECKLIST.md
+netlify.toml

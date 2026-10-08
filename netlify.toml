@@ -1,3 +1,0 @@
-# Cloudflare Pages で運用中。本ファイルは互換のため残置（無害）
-[build]
-  publish = "."

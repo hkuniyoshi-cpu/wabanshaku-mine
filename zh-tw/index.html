@@ -869,10 +869,41 @@ function rebindReveals() {
 /* ============================================================
    CMS load
    ============================================================ */
+function applyReviews(items) {
+  const grid = document.getElementById('reviewsGrid');
+  if (!grid) return;
+  if (!Array.isArray(items) || !items.length) { grid.innerHTML = ''; return; }
+  let html = items.slice(0, 5).map(r =>
+    '<article class="review"><div class="review-stars">'+stars(r.stars)+'</div><p class="review-body">'+esc(r.text)+'</p><div class="review-meta"><span class="review-name">'+esc(r.name)+'</span>'+(r.date?'<span class="review-date">'+esc(fmtDate(r.date))+'</span>':'')+'</div></article>'
+  ).join('');
+  if (items.length < 6) {
+    const g = safeUrl(window._settings && window._settings.gbpUrl) || 'https://maps.app.goo.gl/JWzsMqY7bb53PgNm7';
+    html += '<a class="review review-cta" href="'+esc(g)+'" target="_blank" rel="noopener"><div class="review-cta-stars">★ ★ ★ ★ ★</div><p class="review-cta-msg">更多評論<br>請見 Google</p><span class="review-cta-link">前往 Google 查看 &rarr;</span></a>';
+  }
+  grid.innerHTML = html;
+}
+function safeUrl(u, allowTel) {
+  const v = String(u || '').trim();
+  if (/^https:///i.test(v)) return v;
+  if (allowTel && /^tel:[0-9+-() ]+$/i.test(v)) return v;
+  return '';
+}
+function applyCTA(c) {
+  if (!c) return;
+  const b1 = document.getElementById('ctaBtn1');
+  if (b1 && safeUrl(c.btn1Url)) b1.href = safeUrl(c.btn1Url);
+  const b2 = document.getElementById('ctaBtn2');
+  if (b2 && safeUrl(c.btn2Url, true)) b2.href = safeUrl(c.btn2Url, true);
+}
 function applyAll(d) {
   if (!d) return;
   if (d.settings) applySettings(d.settings);
   if (d.hero)     applyHero(d.hero);
+  if (d.menu && d.menu.length)     applyMenu(d.menu);     else applyMenu(null);
+  if (d.features && d.features.length) applyFeatures(d.features); else applyFeatures(null);
+  if (d.forYou && d.forYou.length) applyForYou(d.forYou); else applyForYou(null);
+  applyReviews(d.reviews);
+  if (d.cta)      applyCTA(d.cta);
   if (d.blog)     applyBlog(d.blog);
   if (d.sns)      applySNS(d.sns);
   applyFAQ(d.faq);
@@ -914,6 +945,8 @@ async function loadCMS() {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
   } catch (err) {
     console.warn('CMS fetch error:', err);
+    const g = document.getElementById('reviewsGrid');
+    if (g && g.querySelector('.review-skel')) applyReviews(null);
     _hideLoader();
   }
 }

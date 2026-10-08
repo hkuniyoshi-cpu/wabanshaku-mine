@@ -781,7 +781,7 @@ function applyReviews(items) {
     '<article class="review"><div class="review-stars">'+stars(r.stars)+'</div><p class="review-body">'+esc(r.text)+'</p><div class="review-meta"><span class="review-name">'+esc(r.name)+'</span>'+(r.date?'<span class="review-date">'+esc(fmtDate(r.date))+'</span>':'')+'</div></article>'
   ).join('');
   if (items.length < 6) {
-    const g = (window._settings && window._settings.gbpUrl) || 'https://maps.app.goo.gl/JWzsMqY7bb53PgNm7';
+    const g = safeUrl(window._settings && window._settings.gbpUrl) || 'https://maps.app.goo.gl/JWzsMqY7bb53PgNm7';
     html += '<a class="review review-cta" href="'+esc(g)+'" target="_blank" rel="noopener"><div class="review-cta-stars">★ ★ ★ ★ ★</div><p class="review-cta-msg">他のクチコミも<br>Googleでご覧いただけます</p><span class="review-cta-link">Googleで見る →</span></a>';
   }
   grid.innerHTML = html;
@@ -885,6 +885,12 @@ function applyFAQ(items) {
   const data = (Array.isArray(items) && items.length) ? items : FAQ_FALLBACK;
   w.innerHTML = data.map(f => '<details class="qa-item"><summary>'+esc(f.q)+'<span class="qa-icon"></span></summary><div class="qa-a">'+esc(f.a)+'</div></details>').join('');
 }
+function safeUrl(u, allowTel) {
+  const v = String(u || '').trim();
+  if (/^https:///i.test(v)) return v;
+  if (allowTel && /^tel:[0-9+-() ]+$/i.test(v)) return v;
+  return '';
+}
 function applyCTA(c) {
   if (!c) return;
   const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
@@ -893,9 +899,9 @@ function applyCTA(c) {
   set('ctaSub', c.subText);
   set('footerDesc', c.footerDesc);
   const b1 = document.getElementById('ctaBtn1');
-  if (b1) { if (c.btn1Text) b1.textContent = c.btn1Text; if (c.btn1Url) b1.href = c.btn1Url; }
+  if (b1) { if (c.btn1Text) b1.textContent = c.btn1Text; if (safeUrl(c.btn1Url)) b1.href = safeUrl(c.btn1Url); }
   const b2 = document.getElementById('ctaBtn2');
-  if (b2) { if (c.btn2Text) b2.textContent = c.btn2Text; if (c.btn2Url) b2.href = c.btn2Url; }
+  if (b2) { if (c.btn2Text) b2.textContent = c.btn2Text; if (safeUrl(c.btn2Url, true)) b2.href = safeUrl(c.btn2Url, true); }
 }
 
 /* ============================================================

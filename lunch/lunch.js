@@ -43,7 +43,8 @@
     if (window.customElements && customElements.get('budoux-ja')) {
       var bxParser = document.createElement('budoux-ja').parser;
       document.querySelectorAll('.makimono h1, .makimono h2, .makimono h3, .makimono p, .makimono dt, .makimono dd, .makimono li, .makimono a, .rail a, .hiru-yoru .hy').forEach(function (el) {
-        if (el.closest('[lang="en"], [lang="zh-Hant"]') || el.querySelector('img')) return;
+        // 英語・繁体字を含む要素、住所など実用情報（コピーされる文字列）は対象外
+        if (el.closest('[lang="en"], [lang="zh-Hant"], .annai-list, .tobira-info') || el.querySelector('img, [lang="en"], [lang="zh-Hant"]')) return;
         bxParser.applyToElement(el);
         el.classList.add('bx');
       });

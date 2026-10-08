@@ -44,7 +44,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="./shared.css?v=20261008b">
+<link rel="stylesheet" href="./shared.css?v=20261008c">
 <script src="/vendor/budoux-ja.min.js" defer></script>
 <meta name="google-site-verification" content="LZg90oxtbqi0v6An7Fc0uO3ufbqcmW4_Qp9mCI2u6wk">
 
@@ -1024,7 +1024,8 @@ const _revealIO = new IntersectionObserver((entries) => {
    文節改行（BudouX）: 日本語を文節の切れ目でだけ折り返す。
    CMS で差し替わった文章にも効くよう、描画のたびに呼ぶ（処理済みの箇所は飛ばす）。
    ============================================================ */
-const BX_TARGETS = '.hero-inner, #settai, .concept-story, .split-aside .aside-inner, .split-main, #hiru, .cta-band, .footer';
+const BX_TARGETS = '.hero-inner, #settai, .concept-story, .split-aside .aside-inner, .split-main, #hiru, .cta-band';
+const BX_SKIP = '[lang="en"], [lang="zh-Hant"], #access, .access-info, address';
 function bxApply() {
   if (!window.customElements) return;
   if (!customElements.get('budoux-ja')) {
@@ -1038,11 +1039,15 @@ function bxApply() {
       root.classList.add('bx');
       // 見出し・段落など文章のかたまり単位で処理し、内容が変わっていないものは飛ばす
       root.querySelectorAll('h1, h2, h3, p, li, dt, dd, summary, blockquote, .qa-a, .btn-solid, .btn-outline, .hiru-band-cta, .menu-settai span').forEach(el => {
-        if (el.closest('[lang="en"], [lang="zh-Hant"]')) return;
-        const plain = el.textContent.replace(/\u200B/g, '');
-        if (el.__bx === plain) return;
+        if (el.closest(BX_SKIP)) return;
+        const raw = el.textContent;
+        const plain = raw.replace(/\u200B/g, '');
+        // 処理済み＝文面が同じで、かつ区切りが残っている（または区切りが不要な短文）。
+        // CMS が同じ文面で書き直した場合は区切りが消えているので、もう一度かける
+        if (el.__bx === plain && (raw !== plain || el.__bxNone)) return;
         parser.applyToElement(el);
         el.__bx = plain;
+        el.__bxNone = (el.textContent === plain);
       });
     });
   } catch (e) { /* 改行調整は失敗しても表示に影響させない */ }

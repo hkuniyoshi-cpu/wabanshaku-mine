@@ -51,6 +51,60 @@
     }
   } catch (e) { /* 改行調整は失敗しても表示に影響させない */ }
 
+  // 文字が1つずつ、ひらりと現れる演出。
+  // BudouX が入れた文節の切れ目（ゼロ幅スペース）ごとに「文節の箱」を作り、その中の文字を1つずつ動かす。
+  // 文節の箱の途中では折り返さないので、文節改行はそのまま保たれる。
+  var fxEls = [];
+  if (!reduce) {
+    try {
+      var FX_SEL = '.tobira-kicker, .tobira-copy, .ichiban-name, .ichiban-v .body-v, .ichiban-v .note-v, .sec-v, .koda-h, .koda .body-v, .dish-name, .dish-v .body-v, .jushi-name, .jushi-v .body-v, .yoru-kicker, .yoru-title, .yoru-body';
+      document.querySelectorAll(FX_SEL).forEach(function (el) {
+        if (el.querySelector('a, img, [lang]')) return;
+        var plain = el.textContent.replace(/\u200B/g, '').replace(/\s+/g, ' ').trim();
+        if (!plain) return;
+        var heading = /^H[1-6]$/.test(el.tagName) || el.classList.contains('tobira-copy');
+        var count = 0;
+        var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+        var nodes = [], n;
+        while ((n = walker.nextNode())) nodes.push(n);
+        nodes.forEach(function (node) {
+          var text = node.nodeValue;
+          if (!text.replace(/[\s\u200B]/g, '')) return;
+          var frag = document.createDocumentFragment();
+          text.split('\u200B').forEach(function (phrase) {
+            if (!phrase) return;
+            var ph = document.createElement('span');
+            ph.className = 'ph';
+            Array.from(phrase).forEach(function (c) {
+              if (c === ' ' || c === '\u3000' || c === '\n') { ph.appendChild(document.createTextNode(c)); return; }
+              var ch = document.createElement('span');
+              ch.className = 'ch';
+              ch.style.setProperty('--i', count++);
+              ch.textContent = c;
+              ph.appendChild(ch);
+            });
+            frag.appendChild(ph);
+          });
+          node.parentNode.replaceChild(frag, node);
+        });
+        if (!count) return;
+        // 読み上げには元の文をそのまま渡し、1文字ずつの箱は読み上げ対象から外す
+        var vis = document.createElement('span');
+        vis.setAttribute('aria-hidden', 'true');
+        while (el.firstChild) vis.appendChild(el.firstChild);
+        var sr = document.createElement('span');
+        sr.className = 'sr-only';
+        sr.textContent = plain;
+        el.appendChild(sr);
+        el.appendChild(vis);
+        // 見出しはゆっくり、本文は全体が 1.4 秒ほどで出そろう速さ
+        el.style.setProperty('--step', (heading ? 0.07 : Math.min(0.03, 1.4 / count)).toFixed(4) + 's');
+        el.classList.add('fx');
+        fxEls.push(el);
+      });
+    } catch (e) { /* 演出は失敗しても文章はそのまま読める */ }
+  }
+
   // 屋号（嶺）を押したら巻物の先頭＝右端へ戻る（縦スクロール時はページ最上部）
   var brand = document.querySelector('.rail-brand');
   if (brand) brand.addEventListener('click', function (e) {
@@ -112,7 +166,15 @@
     var rv = new IntersectionObserver(function (es) {
       es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); rv.unobserve(en.target); } });
     }, { rootMargin: '0px -6% 0px -6%', threshold: 0.08 });
-    document.querySelectorAll('.dish, .koda, .koda-photo, .ichiban-v, .ichiban-h, .jushi-photo, .jushi-v, .jushi-h, .drinks, .oshiharai, .annai-list, .annai-links, .yoru-title, .yoru-body, .yoru-link')
+    document.querySelectorAll('.dish-photo, .dish-h, .koda-photo, .ichiban-photo, .ichiban-h, .jushi-photo, .jushi-h, .drinks, .oshiharai, .annai-list, .annai-links, .yoru-link')
       .forEach(function (el) { el.classList.add('rv'); rv.observe(el); });
+
+    // 文字演出の開始: 画面に入ったら .cue を付ける
+    var cue = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('cue'); cue.unobserve(en.target); } });
+    }, { rootMargin: '0px -8% 0px -8%', threshold: 0.05 });
+    fxEls.forEach(function (el) { cue.observe(el); });
+  } else {
+    fxEls.forEach(function (el) { el.classList.add('cue'); });
   }
 })();

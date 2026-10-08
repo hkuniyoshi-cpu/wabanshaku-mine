@@ -358,3 +358,26 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 
 /* 文節改行（BudouX が文節の切れ目に入れた改行位置でだけ折り返す） */
 .bx { word-break: keep-all; overflow-wrap: anywhere; line-break: strict; }
+
+/* ============================================================
+   文字が1つずつ、ひらりと現れる演出（lunch.js が .fx / .ph / .ch を作る）
+   .ph = 文節の箱（途中で折り返さない）、.ch = 1文字。--i は文字の順番、--step は1文字ごとの間隔
+   ============================================================ */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.fx .ph { display: inline-block; white-space: nowrap; }
+.fx .ch {
+  display: inline-block; opacity: 0;
+  transform: translateY(.55em) rotate(5deg);
+  transition: opacity .7s ease, transform .8s cubic-bezier(.33, 1, .68, 1);
+  transition-delay: calc(var(--i) * var(--step, .03s));
+  will-change: opacity, transform;
+}
+.fx.cue .ch { opacity: 1; transform: none; }
+@media (min-width: 900px) and (min-height: 620px) {
+  /* 縦書きでは行の横（左）から寄ってくる */
+  .fx .ch { transform: translateX(-.6em) rotate(-5deg); }
+  .fx.cue .ch { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx .ch { opacity: 1; transform: none; transition: none; }
+}

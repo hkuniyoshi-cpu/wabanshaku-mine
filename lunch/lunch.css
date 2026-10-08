@@ -380,3 +380,8 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 @media (prefers-reduced-motion: reduce) {
   .fx .ch { opacity: 1; transform: none; transition: none; }
 }
+
+/* 行の長さをそろえ、最終行に数文字だけ残る切れ方を減らす（対応ブラウザのみ。非対応でも表示は変わらない） */
+.bx { text-wrap: pretty; }
+h1.bx, h2.bx, h3.bx, .bx h1, .bx h2, .bx h3, .bx summary, .bx blockquote { text-wrap: balance; }
+.oshiharai p, .omori, .tobira-copy, .yoru-body, .annai-list dd { text-wrap: balance; }

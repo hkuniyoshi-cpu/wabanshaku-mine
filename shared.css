@@ -1423,3 +1423,8 @@ a { color: inherit; text-decoration: none; }
 
 /* 文節改行（BudouX が文節の切れ目に入れた改行位置でだけ折り返す） */
 .bx { word-break: keep-all; overflow-wrap: anywhere; line-break: strict; }
+
+/* 行の長さをそろえ、最終行に数文字だけ残る切れ方を減らす（対応ブラウザのみ。非対応でも表示は変わらない） */
+.bx { text-wrap: pretty; }
+h1.bx, h2.bx, h3.bx, .bx h1, .bx h2, .bx h3, .bx summary, .bx blockquote { text-wrap: balance; }
+.hiru-band-body, .settai-note, .cta-sub, #ctaSub, .sec-lead, .menu-desc, .feat-desc, .scene-card p, .chef-quote { text-wrap: balance; }

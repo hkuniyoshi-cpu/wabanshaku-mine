@@ -241,7 +241,7 @@ a.hy:hover { background: var(--night); color: var(--night-gold); }
 
   .makimono {
     display: flex; flex-direction: row; height: 100vh; height: 100dvh; width: max-content; padding-right: var(--rail);
-    background-image: url('./img/yama-near.svg'), url('./img/yama-far.svg'), url('./img/kasumi.svg'), url('./img/sunago.svg');
+    background-image: url('./img/yama-near.svg'), url('./img/yama-far.svg'), url('./img/kasumi.svg?v=2'), url('./img/sunago.svg');
     background-repeat: repeat-x, repeat-x, repeat-x, repeat;
     background-position: 0 100%, 420px 100%, 0 9vh, 0 0;
     background-size: 1300px 17vh, 1800px 27vh, 1600px 22vh, 900px 900px;

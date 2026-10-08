@@ -43,7 +43,7 @@
   if (brand) brand.addEventListener('click', function (e) {
     e.preventDefault();
     window.scrollTo({ left: 0, top: 0, behavior: reduce ? 'instant' : 'smooth' });
-    if (history.replaceState) history.replaceState(null, '', location.pathname);
+    if (history.replaceState) history.replaceState(history.state, '', location.pathname + location.search);
   });
 
   // 進み具合
